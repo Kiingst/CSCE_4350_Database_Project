@@ -5,8 +5,8 @@ INSERT INTO Store VALUES
 (2,'Northside Store','250 North Ave','555-0102');
 
 INSERT INTO Customer VALUES
-(1,'Lex Luthor','555-1001','lex@example.com','lluthor','demo_hash_1',1,'Credit Card'),
-(2,'Clark Kent','555-1002','clark@example.com','ckent','demo_hash_2',2,'Credit Card');
+(1,'Lex Luthor','555-1001','1 Lexcorp Plaza, Metropolis','lex@example.com','lluthor','demo_hash_1',1,'Credit Card'),
+(2,'Clark Kent','555-1002','344 Clinton St, Metropolis','clark@example.com','ckent','demo_hash_2',2,'Credit Card');
 
 INSERT INTO Employee VALUES
 (1,1,'Bruce Wayne','Sales','Clerk','bwayne','demo_hash_3'),

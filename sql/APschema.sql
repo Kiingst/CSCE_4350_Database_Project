@@ -13,6 +13,7 @@ CREATE TABLE Customer (
   customer_id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
   phone VARCHAR(20),
+  address VARCHAR(200) NOT NULL,
   email VARCHAR(100) UNIQUE,
   username VARCHAR(50) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
