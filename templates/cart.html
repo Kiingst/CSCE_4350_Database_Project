@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import form, field, select, hidden, table, payment_method with context %}
+{% block content %}
+<p>Branch {{ s.store }} · Total ${{ '%.2f'|format(total) }}</p>
+{{ table(lines) }}
+{% call form('/action/cart_clear', 'Clear cart') %}{% endcall %}
+<section>
+  <h2>Confirm simulated payment</h2>
+  <p>Use synthetic details only. Enter the last four digits; never enter a full card number or CVV.</p>
+  {% call form('/action/checkout', 'Place order') %}
+    {{ hidden('token', s.token) }}
+    {{ select('fulfillment', [('Pickup', 'Pickup'), ('Delivery', 'Delivery')]) }}
+    {{ field('delivery_address', value=a.address) }}
+    {{ payment_method(a.pref_payment_method) }}
+    {{ field('billing_address', value=a.address) }}
+    {{ field('card_type', value='Demo', required=false) }}
+    {{ field('last_four', value='4242', required=false) }}
+    {{ field('expiry', value='2030-12', required=false) }}
+    {{ select('decision', [('Approved', 'Approved'), ('Declined', 'Declined')]) }}
+  {% endcall %}
+</section>
+{% endblock %}

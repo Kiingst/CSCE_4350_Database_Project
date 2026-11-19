@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import form, field, select, hidden, table, payment_method with context %}
+{% block content %}
+{% call form('/action/profile') %}
+  {% for name in ['name', 'address', 'email', 'phone'] %}
+    {{ field(name, value=a[name] or '', required=name != 'phone') }}
+  {% endfor %}
+  {{ select('store_id', branches, current=a.pref_store_id) }}
+  {{ payment_method(a.pref_payment_method) }}
+{% endcall %}
+<h2>Saved vehicles</h2>
+{{ table(vehicles) }}
+{% for vehicle in vehicles %}
+  <p><a href="/catalog?{{ {'make': vehicle.make, 'model': vehicle.model, 'year': vehicle.year}|urlencode }}">Find compatible parts for {{ vehicle.make }} {{ vehicle.model }}</a></p>
+  {% call form('/action/delete_vehicle', 'Delete vehicle') %}{{ hidden('vehicle_id', vehicle.vehicle_id) }}{% endcall %}
+{% endfor %}
+{% call form('/action/vehicle', 'Save vehicle') %}
+  {{ field('make') }}
+  {{ field('model') }}
+  {{ field('year', value=2020, type='number') }}
+{% endcall %}
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import form, field, select, hidden, table with context %}
+{% block content %}
+{{ table([order]) }}
+<h2>Historical order lines</h2>
+{{ table(detail.lines) }}
+<h2>Payment</h2>
+{{ table(detail.payment) }}
+<h2>Returns / refunds</h2>
+{{ table(detail.refunds) }}
+{% if order.delivery_status == 'Pending' %}
+  {% call form('/action/order_status', 'Cancel pending order') %}
+    {{ hidden('order_id', oid) }}
+    {{ hidden('target', 'Cancelled') }}
+  {% endcall %}
+{% endif %}
+{% if a.kind == 'Employee' %}
+  {% if order.delivery_status in ['Pending', 'Shipped'] %}
+    {% set target = 'Delivered' if order.fulfillment_method == 'Pickup' or order.delivery_status == 'Shipped' else 'Shipped' %}
+    {% call form('/action/order_status', 'Complete pickup' if order.fulfillment_method == 'Pickup' else 'Mark ' ~ target|lower) %}
+      {{ hidden('order_id', oid) }}
+      {{ hidden('target', target) }}
+    {% endcall %}
+  {% endif %}
+  {% if order.delivery_status == 'Delivered' %}
+  <section>
+    <h2>Record return and simulated refund</h2>
+    {% call form('/action/return', 'Record return') %}
+      {{ hidden('order_id', oid) }}
+      <label>Part Id
+        <select name="part_id">{% for line in detail.lines %}<option value="{{ line.part_id }}">{{ line.part_name }}</option>{% endfor %}</select>
+      </label>
+      {{ field('quantity', value=1, type='number') }}
+      {{ field('reason') }}
+      {{ select('restock', [('yes', 'Restock'), ('no', 'Do not restock')]) }}
+    {% endcall %}
+  </section>
+  {% endif %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+{% for order in orders %}
+<article>
+  <h2><a href="/orders/{{ order.customer_order_id }}">Order #{{ order.customer_order_id }}</a></h2>
+  <p>{{ order.placement_date }} · {{ order.fulfillment_method }} · {{ order.delivery_status }}</p>
+</article>
+{% endfor %}
+{% endblock %}

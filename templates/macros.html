@@ -1,0 +1,47 @@
+{# Shared HTML controls. Imported with context to access the session's CSRF token. #}
+{% macro field(name, label=none, value='', type='text', required=true) -%}
+<label>{{ label or name|replace('_', ' ')|title }}
+  <input name="{{ name }}" value="{{ value }}" type="{{ type }}"{% if required %} required{% endif %}>
+</label>
+{%- endmacro %}
+
+{% macro select(name, options, label=none, current=none) -%}
+<label>{{ label or name|replace('_', ' ')|title }}
+  <select name="{{ name }}">
+    {% for value, title in options %}
+      <option value="{{ value }}"{% if value|string == current|string %} selected{% endif %}>{{ title }}</option>
+    {% endfor %}
+  </select>
+</label>
+{%- endmacro %}
+
+{% macro hidden(name, value) -%}
+<input type="hidden" name="{{ name }}" value="{{ value }}">
+{%- endmacro %}
+
+{% macro form(action, button='Save') -%}
+<form action="{{ action }}" method="post">
+  {{ hidden('csrf', s.csrf) }}
+  {{ caller() }}
+  <button type="submit">{{ button }}</button>
+</form>
+{%- endmacro %}
+
+{% macro table(data) -%}
+{% if data %}
+<div class="scroll">
+  <table>
+    <thead><tr>{% for key in data[0].keys() %}<th scope="col">{{ key|replace('_', ' ')|title }}</th>{% endfor %}</tr></thead>
+    <tbody>
+      {% for row in data %}
+      <tr>{% for key in data[0].keys() %}<td>{{ '' if row[key] is none else row[key] }}</td>{% endfor %}</tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}<p>No records yet.</p>{% endif %}
+{%- endmacro %}
+
+{% macro payment_method(current=none) -%}
+{{ select('method', [('Credit Card', 'Credit Card'), ('Debit Card', 'Debit Card'), ('Cash', 'Cash')], current=current) }}
+{%- endmacro %}

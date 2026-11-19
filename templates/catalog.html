@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import form, field, select, hidden with context %}
+{% block content %}
+<form method="get">
+  {{ select('store_id', branches, current=store) }}
+  {{ field('q', 'Part ID, name, or category', q, required=false) }}
+  {{ field('make', value=make, required=false) }}
+  {{ field('model', value=model, required=false) }}
+  {{ field('year', value=year, required=false) }}
+  <button type="submit">Search</button>
+</form>
+{% for part in parts %}
+<article>
+  <h2>{{ part.part_id }} · {{ part.part_name }} · ${{ part.price }}</h2>
+  <p>{{ part.description }}</p>
+  <p>{{ part.category }} · {{ part.brand }} · {{ part.part_condition }} · Stock: {{ part.stock }}</p>
+  {% if part.stock < part.reorder_level %}<strong>Low stock</strong>{% endif %}
+  {% if a.kind == 'Customer' %}
+    {% call form('/action/cart_add', 'Add to cart') %}
+      {{ hidden('part_id', part.part_id) }}
+      {{ hidden('store_id', store) }}
+      {{ field('quantity', value=1, type='number') }}
+    {% endcall %}
+  {% endif %}
+</article>
+{% endfor %}
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import select, table with context %}
+{% block content %}
+<form method="get">
+  {{ select('period', [('daily', 'Daily'), ('weekly', 'Weekly'), ('monthly', 'Monthly')], current=period) }}
+  {% set options = [('branch', 'My branch')] %}
+  {% if a.role == 'Manager' %}{% set options = options + [('all', 'All stores (manager)')] %}{% endif %}
+  {{ select('scope', options, current=scope) }}
+  <button type="submit">Run report</button>
+</form>
+<p>Sales use placement dates and exclude cancelled orders. Refunds are attributed to the original sale period. Net sales = gross sales − refunds.</p>
+{% for name, data in reports.items() %}
+<section>
+  <h2>{{ name|replace('_', ' ')|title }}</h2>
+  {{ table(data) }}
+</section>
+{% endfor %}
+{% endblock %}

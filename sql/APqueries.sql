@@ -9,7 +9,7 @@ SELECT s.name AS store, p.part_name, i.amount_stocked, i.reorder_level
 FROM Inventory i
 JOIN Store s ON s.store_id = i.store_id
 JOIN Part p ON p.part_id = i.part_id
-WHERE i.amount_stocked <= i.reorder_level;
+WHERE i.amount_stocked < i.reorder_level;
 
 --  a customers order history
 SELECT o.customer_order_id,

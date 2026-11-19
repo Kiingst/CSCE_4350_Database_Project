@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import form, field, hidden, table with context %}
+{% block content %}
+{{ table(purchases) }}
+<h2>Purchase lines</h2>
+{{ table(lines) }}
+{% if a.role == 'Manager' %}
+<section>
+  <h2>Create purchase</h2>
+  {{ table(suppliers) }}
+  {{ table(links) }}
+  {% call form('/action/purchase', 'Order from supplier') %}
+    {{ field('supplier_id') }}
+    {{ field('part_id') }}
+    {{ field('quantity', value=1, type='number') }}
+  {% endcall %}
+</section>
+{% for purchase in purchases %}
+<section>
+  <h3>Purchase #{{ purchase.store_order_id }}</h3>
+  {% call form('/action/reorder', 'Copy / reorder at current supplier costs') %}
+    {{ hidden('purchase_id', purchase.store_order_id) }}
+  {% endcall %}
+  {% if purchase.delivery_status == 'Pending' %}
+    {% for target, label in [('Delivered', 'Receive purchase'), ('Cancelled', 'Cancel purchase')] %}
+      {% call form('/action/purchase_status', label) %}
+        {{ hidden('purchase_id', purchase.store_order_id) }}
+        {{ hidden('target', target) }}
+      {% endcall %}
+    {% endfor %}
+  {% endif %}
+</section>
+{% endfor %}
+{% endif %}
+{% endblock %}

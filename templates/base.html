@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }} · Auto Parts</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<main>
+  <nav aria-label="Main navigation">
+    <a href="/">Auto Parts</a>
+    {% if s and s.auth %}
+      <a href="/catalog">Catalog</a>
+      <a href="/orders">Orders</a>
+      {% if s.auth.kind == 'Customer' %}
+        <a href="/cart">Cart</a>
+        <a href="/profile">Profile &amp; vehicles</a>
+      {% else %}
+        <a href="/admin">Store administration</a>
+        <a href="/purchases">Purchases</a>
+        <a href="/reports">Reports</a>
+      {% endif %}
+      <form action="/action/logout" method="post">
+        <input type="hidden" name="csrf" value="{{ s.csrf }}">
+        <button type="submit">Sign out</button>
+      </form>
+    {% endif %}
+  </nav>
+  <h1>{{ title }}</h1>
+  {% if message %}<p class="notice" role="status">{{ message }}</p>{% endif %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>

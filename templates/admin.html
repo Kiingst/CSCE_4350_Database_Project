@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import form, field, select, table with context %}
+{% block content %}
+<h2>Branch inventory</h2>
+{{ table(inventory) }}
+<h2>Branch employees</h2>
+{{ table(roster) }}
+{% if a.role == 'Manager' %}
+<section>
+  <h2>Add or edit clerk</h2>
+  <p>Leave employee ID blank to add. For edits, leave password blank to keep it.</p>
+  {% call form('/action/clerk') %}
+    {{ field('employee_id', required=false) }}
+    {{ field('name') }}
+    {{ field('department') }}
+    {{ field('username') }}
+    {{ field('password', type='password', required=false) }}
+  {% endcall %}
+  {% call form('/action/delete_clerk', 'Delete own-store clerk') %}{{ field('employee_id') }}{% endcall %}
+</section>
+<section>
+  <h2>Add or edit shared catalog part</h2>
+  <p>Price changes affect new purchases across all branches. Historical order prices are retained. Leave part ID blank to add.</p>
+  {% call form('/action/part') %}
+    {{ field('part_id', required=false) }}
+    {{ field('part_name') }}
+    {{ field('description') }}
+    {{ field('category') }}
+    {{ field('brand') }}
+    {{ select('part_condition', [('New', 'New'), ('Rebuilt', 'Rebuilt')]) }}
+    {{ field('price') }}
+  {% endcall %}
+</section>
+<section>
+  <h2>Set branch stock</h2>
+  {% call form('/action/stock') %}
+    {{ field('part_id') }}
+    {{ field('quantity', type='number') }}
+    {{ field('reorder_level', value=5, type='number') }}
+  {% endcall %}
+</section>
+<section>
+  <h2>Suppliers</h2>
+  {{ table(suppliers) }}
+  <p>Leave supplier ID blank to add; supply an ID to edit.</p>
+  {% call form('/action/supplier') %}
+    {{ field('supplier_id', required=false) }}
+    {{ field('name') }}
+    {{ field('phone', required=false) }}
+    {{ field('address') }}
+  {% endcall %}
+  <h3>Supplier part links</h3>
+  {{ table(links) }}
+  {% call form('/action/supplier_part') %}
+    {{ field('supplier_id') }}
+    {{ field('part_id') }}
+    {{ field('unit_cost') }}
+  {% endcall %}
+</section>
+<section>
+  <h2>Exact vehicle compatibility</h2>
+  {{ table(compatibility) }}
+  {% call form('/action/compatibility') %}
+    {{ field('part_id') }}
+    {{ field('make') }}
+    {{ field('model') }}
+    {{ field('year', type='number') }}
+  {% endcall %}
+</section>
+{% endif %}
+{% endblock %}

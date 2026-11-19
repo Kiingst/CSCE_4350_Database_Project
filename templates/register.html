@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import form, field, select, payment_method with context %}
+{% block content %}
+<section>
+  <h2>Create customer account</h2>
+  <p>Choose a preferred branch and payment method. Passwords must contain 10–128 characters.</p>
+  {% call form('/action/register', 'Create account') %}
+    {{ field('name') }}
+    {{ field('username') }}
+    {{ field('password', type='password') }}
+    {{ field('address') }}
+    {{ field('email', type='email') }}
+    {{ field('phone', required=false) }}
+    {{ select('store_id', branches, 'Preferred store') }}
+    {{ payment_method() }}
+  {% endcall %}
+  <p>Already have an account? <a href="/">Sign in</a></p>
+</section>
+{% endblock %}

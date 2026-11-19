@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import form, field, select with context %}
+{% block content %}
+<p>Local inventory, ordering, and store operations.</p>
+<section>
+  <h2>Sign in</h2>
+  {% call form('/action/login', 'Sign in') %}
+    {{ select('kind', [('Customer', 'Customer'), ('Employee', 'Employee')]) }}
+    {{ field('username') }}
+    {{ field('password', type='password') }}
+  {% endcall %}
+  <p>Need an account? <a href="/register">Create customer account</a></p>
+</section>
+<p>Demo accounts: lluthor / ckent (customers), bwayne / ballen (clerks), tdrake (manager). Password: DemoPass123!</p>
+{% endblock %}
